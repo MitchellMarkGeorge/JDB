@@ -1,4 +1,5 @@
 import { JDB } from "./src";
+import { Query } from "./src/types";
 
 const db = new JDB("./test.json");
 
@@ -14,14 +15,14 @@ interface Person {
 
 (async () => {
 
-    const person = { name: "Bob", age: 6}
-    await db.load({ people: [person]});
+    const person = { name: "Bob", age: 6 }
+    await db.load({ people: [person] });
 
     const people = db.collection<Person>("people");
 
     // const citys = db.collection<City>("citys");
 
-    people.insert({ name: "Mary", age: 9});
+    people.insert({ name: "Mary", age: 9 });
 
     // console.log(people.getAll());
     // console.log(db.data);
@@ -30,3 +31,16 @@ interface Person {
 // db.load({ posts: [new Date()], names: [""] })
 // .then(() => console.log("loaded"))
 // .catch((err) => console.log(err))
+
+const data = [{ name: "Bob", age: 6 }, { name: "Bobby", age: 6 }, { name: "Mary", age: 9 }]
+function applyQuery(query: Query, arr: any[]) {
+    return arr.filter((document) =>
+    // all the properties in 
+        Object.keys(query).every((key) => {
+           
+            return query[key] === document[key];
+        })
+    )
+}
+
+console.log(applyQuery({ friends: "Bobby" }, data))

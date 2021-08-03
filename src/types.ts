@@ -9,7 +9,7 @@ import { homedir } from "os";
 // }
 
 
-export const DEFAULT_PATH = path.join(homedir(), "jdb.json");
+export const DEFAULT_PATH = path.join(homedir(), "jdb.json"); // use package.json name instead
 // export const DEFAULT_OPTIONS: JDBOptions = {
 //     filePath: 
 // }
@@ -21,3 +21,5 @@ export interface Data<T> {
 export interface Query {
     [key: string]: any
 }
+
+export type QueryFunc<T> = (document: T) => boolean

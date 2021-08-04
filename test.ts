@@ -1,10 +1,11 @@
 import { JDB } from "./src";
-import { Query } from "./src/types";
+import { JDBDocument, id } from "./src/types"; // find beter name
 
-const db = new JDB("./test.json");
 
-interface Person {
-    
+const db = new JDB({ inMemory: true });
+
+interface Person extends JDBDocument { // in TypeScript, all types must extend JDBDocument
+
     name: string,
     age: number
 }
@@ -16,14 +17,29 @@ interface Person {
 
 (async () => {
 
-    const person = { name: "Bob", age: 6 }
-    await db.load({ people: [person] });
+    // shouold users have to provide ids themselves?
 
-    const people = db.collection<Person>("people");
+    const bob: Person = { name: "Bob", age: 6 }
+    const mary: Person = { name: "Mary", age: 9 }
+
+    db.setDefaults({ people: [bob, mary] });
+
+    const people = db.collection<Person>("people"); // a
 
     // const citys = db.collection<City>("citys");
 
-    people.insert({ name: "Mary", age: 9 });
+    await people.insert({ name: "Mary", age: 8 });
+
+    const [first] = people.getAll();
+
+    console.log(first);
+
+    const id = first._id as string;
+    // console.log(people);
+
+    console.log(people.findByID(id))
+
+    // console.log(people.getAll());
 
     // people.insert({ _id: })
     // console.log(people.getAll());
@@ -39,7 +55,7 @@ interface Person {
 //     return arr.filter((document) =>
 //     // all the properties in 
 //         Object.keys(query).every((key) => {
-           
+
 //             return query[key] === document[key];
 //         })
 //     )

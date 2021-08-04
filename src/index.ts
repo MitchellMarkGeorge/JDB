@@ -1,11 +1,10 @@
 // import { JDBOptions } from "./type/s";
 import fse from "fs-extra";
 import { nanoid } from "nanoid";
-import { JsonObject } from "type-fest";
 import { Collection } from "./collection";
-import { Data, DEFAULT_PATH, JDBConfig } from "./types";
+import { Data, DEFAULT_PATH, JDBConfig, JDBDocument } from "./types";
 
-import onChange from "on-change";
+
 export class JDB {
   private data!: Data<any>; // should i do this
   private filePath: string;
@@ -28,7 +27,7 @@ export class JDB {
   } // autosave option
 
   public setDefaults(defaultData: Data<any>) {
-    // this adds ids to all documents if there are none
+    // this adds ids to all documents if there are none for every given collection
     // should this be done in the Collection constructor?
 
     if (this.data) {
@@ -47,36 +46,35 @@ export class JDB {
 
 
   public async load(defaultData?: Data<any>) {
-    // method should ne be called again
-
+    
+    // if db is in memeory or data is loaded, return early
+    // no data needs to be loaded
     if (this.inMemory || this.data) {
+      // no data needs to be loaded
       return; // throw error?
     }
 
+    // if data is being loaded from a file
+
+    // is the db file exists read it and set the data
     if (fse.existsSync(this.filePath)) {
-      try {
+     
         this.data = await fse.readJSON(this.filePath);
-      } catch (error) {
-        throw new Error("");
-      }
+     
     } else if (defaultData) {
+      // if no file is avalible to read and default data is provided,
+      // set the dafailt data (fiving all the documents ids)
       this.setDefaults(defaultData);
     } else {
+      // if no file or default data, set it as empty object
       this.data = {};
     }
 
-    if (!this.inMemory && this.autoSave) {
-      this.data = onChange(this.data, async () => {
-        await this.save();
-      })
-    }
-
-
   }
 
-  public collection<T>(collectionName: string) {
+  public collection<T extends JDBDocument>(collectionName: string) {
     if (!this.data) {
-
+      // if there is no data (should only happen if in memory)
       if (this.inMemory) {
         this.data = {}; // would only happen if no defaults are set
       } else {
@@ -84,28 +82,33 @@ export class JDB {
       }
 
     }
-    // console.log(this.data[collectionName]);
+    
     const collectionData: T[] = this.data[collectionName]?.length
       ? this.data[collectionName]
       : [];
 
-    console.log(collectionData);
-    // if (!this.data[collectionName]) {
-    //     this.data[collectionName] = []
-    // }
+    
 
-
-    if (this.inMemory) {
+    if (this.inMemory || !this.autoSave) {
+      // if not autoSave, the user will need to call db.save();
+      // also if the db is in memory, no save method is needed
       return new Collection<T>(collectionData)
     }
-
+    // for non in memory and autosave, give Collection object copy of save func to automaticlly save after changes
     const saveFunc = this.save.bind(this);
     return new Collection<T>(collectionData, saveFunc);
+
+    
   }
 
-  private async save() {
-    // use arrow function
+  public async save() {
+    // should not be able to call save() if in memory
+    // ONLY CALL IF NOT AUTO SAVING
 
+    
+    if (this.inMemory) {
+      throw new Error("Not allowed to save when in memory");
+    }
     await fse.outputJSON(this.filePath, this.data);
   }
 

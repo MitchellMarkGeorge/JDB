@@ -1,7 +1,10 @@
-import { QueryFunc } from "./types";
+import { JDBDocument, QueryFunc } from "./types";
 import { nanoid } from "nanoid";
-export class Collection<T extends { _id?: string }> {
+export class Collection<T extends JDBDocument> {
   constructor( private data: T[], private save?: () => Promise<void>) {
+
+    // save() method would only be provided if not in memory and is autosaving
+
     // think about this
     // this is for default data without ids
 
@@ -14,6 +17,8 @@ export class Collection<T extends { _id?: string }> {
     //   }
     // })
   }
+
+ 
 
 
 
@@ -39,20 +44,21 @@ export class Collection<T extends { _id?: string }> {
     if (!document._id) {
       document._id = nanoid();
     }
-    this.data.push(document);
+    this.data.push(document); // mutates
 
+    // non in
     if (this.save) {
       await this.save();
     }
     
   }
 
-  async insertMany(documents: T[]) {
+   async insertMany(documents: T[]) {
     documents.forEach((document) => {
       if (!document._id) {
         document._id = nanoid();
       }
-      this.data.push(document);
+      this.data.push(document); // mutates
     });
 
     if (this.save) {

@@ -16,7 +16,7 @@ export class Collection<T> {
     return this.data.find(query)
   }
 
- 
+
   async insert(document: T) {
 
     this.data.push(document); // mutates
@@ -76,13 +76,10 @@ export class Collection<T> {
     if (!documents.length) return;
 
     documents.forEach(document => {
-      // for now use shallow 
-      const updatedDocument = Object.assign(document, updatedFields);
+      // shallow merge
 
-      // is all of this neccecarry
-      const index = this.data.indexOf(document);
+      Object.assign(document, updatedFields); // mutates document - no need to change array
 
-      this.data[index] = updatedDocument;
     })
 
     if (this.save) {
@@ -96,18 +93,17 @@ export class Collection<T> {
     if (!document) {
       throw new Error("No document with that id exists");
     }
-    // for now use shallow 
-    const updatedDocument = Object.assign(document, updatedFields);
+    // shallow merge 
 
-    // is all of this neccecarry
-    const index = this.data.indexOf(document);
 
-    this.data[index] = updatedDocument;
+    Object.assign(document, updatedFields); // mutates document - no need to change array
 
     if (this.save) {
       await this.save();
     }
   }
+
+  // updateAll ?
 
   count(query?: QueryFunc<T>) {
 
@@ -127,7 +123,7 @@ export class Collection<T> {
     }
   }
 
-  
+
 
   // private applyQuery(query: QueryFunc<T>) {
 

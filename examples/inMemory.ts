@@ -19,14 +19,13 @@ const people = db.collection<Person>("people");
 
     await people.insertMany([bob, mary, john]);
 
-    // fi
-    // console.log(people.find(person => person.age >= 16));
+    
+    console.log(people.find(person => person.age >= 16));
 
-    // console.log(people.findOne(person => person.name === "Bob"));
+    console.log(people.findOne(person => person.name === "Bob"));
 
-    // await people.update(person => person.age >= 16, { age: 21} );
+    await people.update(person => person.age >= 16, { age: 21} );
 
-    await people.remove(person => person.name === "Bob" || person.name === "Mary");
-
+    
     console.log(people.getAll());
 })()

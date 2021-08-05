@@ -25,6 +25,8 @@ export class JDB {
 
   public async load(defaultData?: Data<any>) {
 
+    // should i create the Collection objects before hand here?
+
     // if db is in memeory or data is loaded, return early
     // no data needs to be loaded
     if (this.inMemory || this.data) {
@@ -56,7 +58,7 @@ export class JDB {
       if (this.inMemory) {
         this.data = {}; // would only happen if no defaults are set
       } else {
-        throw new Error("Error: db.load() must be called");
+        throw new Error("Error: db.load() must be called first");
       }
 
     }

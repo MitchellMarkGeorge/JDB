@@ -1,6 +1,8 @@
 import path from "path";
 import { homedir } from "os";
 import { nanoid } from "nanoid";
+import is from "@sindresorhus/is";
+import { isObject } from "util";
 
 export interface JDBConfig {
     filePath?: string,
@@ -23,6 +25,8 @@ export interface Data<T> {
 }
 
 export type QueryFunc<T> = (document: T) => boolean;
+
+
 
 
 

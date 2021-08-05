@@ -6,8 +6,8 @@ interface Person {
     age: number
 }
 
-const db = new JDB({ filePath: "./db.json"});
-
+const db = new JDB({ filePath: "./db.json", autoSave: false});
+// for changes to be saved to the db file, db.save() must be called if autoSave is false
 const people = db.collection<Person>("people");
 
 
@@ -23,14 +23,15 @@ const people = db.collection<Person>("people");
 
     await people.insertMany([bob, mary, john]);
     // if db file does not exist, it is automatically created
-    // changes are automatically saved to the db file path (autoSaved)
+    await db.save();
     
     console.log(people.find(person => person.age >= 16));
 
     console.log(people.findOne(person => person.name === "Bob"));
 
     await people.update(person => person.age >= 16, { age: 21} );
-    // changes are automatically saved to the db file path (autoSaved)
+    
+    await db.save();
     
     console.log(people.getAll());
 })()

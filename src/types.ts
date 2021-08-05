@@ -1,8 +1,5 @@
 import path from "path";
 import { homedir } from "os";
-import { nanoid } from "nanoid";
-import is from "@sindresorhus/is";
-import { isObject } from "util";
 
 export interface JDBConfig {
     filePath?: string,
@@ -16,9 +13,13 @@ export interface JDBConfig {
 
 
 export const DEFAULT_PATH = path.join(homedir(), "jdb.json"); // use package.json name instead
-// export const DEFAULT_OPTIONS: JDBOptions = {
-//     filePath: 
-// }
+
+export const DEFAULT_OPTIONS: JDBConfig = {
+    filePath: DEFAULT_PATH,
+    autoSave: true,
+    inMemory: false
+
+}
 
 export interface Data<T> {
     [key: string]: T[]

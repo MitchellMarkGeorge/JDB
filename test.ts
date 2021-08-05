@@ -1,10 +1,10 @@
 import { JDB } from "./src";
-import { JDBDocument, id } from "./src/types"; // find beter name
+
 
 
 const db = new JDB({ inMemory: true });
 
-interface Person extends JDBDocument { // in TypeScript, all types must extend JDBDocument
+interface Person { 
 
     name: string,
     age: number
@@ -19,25 +19,25 @@ interface Person extends JDBDocument { // in TypeScript, all types must extend J
 
     // shouold users have to provide ids themselves?
 
-    const bob: Person = { name: "Bob", age: 6 }
-    const mary: Person = { name: "Mary", age: 9 }
+    // const bob: Person = { name: "Bob", age: 6 }
+    // const mary: Person = { name: "Mary", age: 9 }
 
-    db.setDefaults({ people: [bob, mary] });
+    // db.setDefaults({ people: [bob, mary] });
 
     const people = db.collection<Person>("people"); // a
-
+    
     // const citys = db.collection<City>("citys");
 
-    await people.insert({ name: "Mary", age: 8 });
+    // await people.insert({ name: "Mary", age: 8 });
 
-    const [first] = people.getAll();
+    // const [first] = people.getAll();
 
-    console.log(first);
+    // console.log(first);
 
-    const id = first._id as string;
+    // const id = first._id as string;
     // console.log(people);
 
-    console.log(people.findByID(id))
+    console.log(people.getAll())
 
     // console.log(people.getAll());
 

@@ -10,9 +10,7 @@ export interface JDBConfig {
 
 }
 
-export interface JDBDocument { // find beter name
-    _id?: string
-}
+
 
 
 export const DEFAULT_PATH = path.join(homedir(), "jdb.json"); // use package.json name instead
@@ -20,10 +18,11 @@ export const DEFAULT_PATH = path.join(homedir(), "jdb.json"); // use package.jso
 //     filePath: 
 // }
 
-export interface Data<T extends { _id?: string }> {
+export interface Data<T> {
     [key: string]: T[]
 }
 
 export type QueryFunc<T> = (document: T) => boolean;
 
-export const id = () => nanoid();
+
+
